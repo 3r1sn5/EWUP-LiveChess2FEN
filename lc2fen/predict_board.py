@@ -76,7 +76,7 @@ def predict_board_keras(model_path, img_size, pre_input, path='', a1_pos='',
         if os.path.isdir(path):
             return continuous_predictions(path, a1_pos, obtain_pieces_probs)
         else:
-            return predict_board(path, a1_pos, obtain_pieces_probs)
+            return time_predict_board(path, a1_pos, obtain_pieces_probs)
 
 
 def predict_board_onnx(model_path, img_size, pre_input, path='', a1_pos='', 
@@ -112,7 +112,7 @@ def predict_board_onnx(model_path, img_size, pre_input, path='', a1_pos='',
         if os.path.isdir(path):
             return continuous_predictions(path, a1_pos, obtain_pieces_probs)
         else:
-            return predict_board(path, a1_pos, obtain_pieces_probs)
+            return time_predict_board(path, a1_pos, obtain_pieces_probs)
 
 
 def predict_board_trt(model_path, img_size, pre_input, path='', a1_pos='', 
@@ -306,10 +306,10 @@ def test_predict_board(obtain_predictions):
 
     for i in range(5):
         fen = time_predict_board(os.path.join("predictions", 
-                                              "test" + str(i+1) + ".jpg"),
+                                              "test" + str(i + 1) + ".jpg"),
                                  a1_squares[i],
                                  obtain_predictions)
-        print_fen_comparison("test" + str(i+1) + ".jpg", fen, fens[i])
+        print_fen_comparison("test" + str(i + 1) + ".jpg", fen, fens[i])
 
 
 def detect_input_board(board_path, board_corners=None):

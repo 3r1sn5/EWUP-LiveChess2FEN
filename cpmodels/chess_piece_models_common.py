@@ -2,6 +2,7 @@
 Common functions to train the chess piece models.
 """
 import matplotlib
+import matplotlib.pyplot as plt
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from keras.layers import Dense, GlobalAveragePooling2D
@@ -9,7 +10,6 @@ from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 
 matplotlib.use('agg')
-import matplotlib.pyplot as plt
 
 
 def build_model(base_model):
