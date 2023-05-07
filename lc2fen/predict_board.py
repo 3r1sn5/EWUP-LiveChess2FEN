@@ -248,21 +248,13 @@ def predict_board(board_path, a1_pos, obtain_pieces_probs, board_corners=None,
         chessboard and the coordinates of the corners of the chessboard
         in the input image.
     """
-    board_corners = detect_input_board(board_path, board_corners)
-    pieces = obtain_individual_pieces(board_path)
-    pieces_probs = obtain_pieces_probs(pieces)
-    predictions = infer_chess_pieces(pieces_probs, a1_pos, previous_fen)
-    
-    board = list_to_board(predictions)
-
     total_time = 0
-
     start = time.perf_counter()
-    detect_input_board(board_path)
+    board_corners = detect_input_board(board_path, board_corners)
     elapsed_time = time.perf_counter() - start
     total_time += elapsed_time
     print(f"Elapsed time detecting the input board: {elapsed_time}")
-
+    
     start = time.perf_counter()
     pieces = obtain_individual_pieces(board_path)
     elapsed_time = time.perf_counter() - start
@@ -276,7 +268,7 @@ def predict_board(board_path, a1_pos, obtain_pieces_probs, board_corners=None,
     print(f"Elapsed time predicting probabilities: {elapsed_time}")
 
     start = time.perf_counter()
-    predictions = infer_chess_pieces(pieces_probs, a1_pos)
+    predictions = infer_chess_pieces(pieces_probs, a1_pos, previous_fen)
     elapsed_time = time.perf_counter() - start
     total_time += elapsed_time
     print(f"Elapsed time inferring chess pieces: {elapsed_time}")
@@ -289,7 +281,7 @@ def predict_board(board_path, a1_pos, obtain_pieces_probs, board_corners=None,
     print(f"Elapsed time converting to fen notation: {elapsed_time}")
 
     print(f"Elapsed total time: {total_time}")
-
+    
     return fen, board_corners
 
 
