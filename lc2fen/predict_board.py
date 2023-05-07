@@ -76,7 +76,7 @@ def predict_board_keras(model_path, img_size, pre_input, path='', a1_pos='',
         if os.path.isdir(path):
             return continuous_predictions(path, a1_pos, obtain_pieces_probs)
         else:
-            return time_predict_board(path, a1_pos, obtain_pieces_probs)
+            return predict_board(path, a1_pos, obtain_pieces_probs)
 
 
 def predict_board_onnx(model_path, img_size, pre_input, path='', a1_pos='', 
@@ -112,7 +112,7 @@ def predict_board_onnx(model_path, img_size, pre_input, path='', a1_pos='',
         if os.path.isdir(path):
             return continuous_predictions(path, a1_pos, obtain_pieces_probs)
         else:
-            return time_predict_board(path, a1_pos, obtain_pieces_probs)
+            return predict_board(path, a1_pos, obtain_pieces_probs)
 
 
 def predict_board_trt(model_path, img_size, pre_input, path='', a1_pos='', 
@@ -252,9 +252,43 @@ def predict_board(board_path, a1_pos, obtain_pieces_probs, board_corners=None,
     pieces = obtain_individual_pieces(board_path)
     pieces_probs = obtain_pieces_probs(pieces)
     predictions = infer_chess_pieces(pieces_probs, a1_pos, previous_fen)
+    
+    board = list_to_board(predictions)
 
+    total_time = 0
+
+    start = time.perf_counter()
+    detect_input_board(board_path)
+    elapsed_time = time.perf_counter() - start
+    total_time += elapsed_time
+    print(f"Elapsed time detecting the input board: {elapsed_time}")
+
+    start = time.perf_counter()
+    pieces = obtain_individual_pieces(board_path)
+    elapsed_time = time.perf_counter() - start
+    total_time += elapsed_time
+    print(f"Elapsed time obtaining the individual pieces: {elapsed_time}")
+
+    start = time.perf_counter()
+    pieces_probs = obtain_pieces_probs(pieces)
+    elapsed_time = time.perf_counter() - start
+    total_time += elapsed_time
+    print(f"Elapsed time predicting probabilities: {elapsed_time}")
+
+    start = time.perf_counter()
+    predictions = infer_chess_pieces(pieces_probs, a1_pos)
+    elapsed_time = time.perf_counter() - start
+    total_time += elapsed_time
+    print(f"Elapsed time inferring chess pieces: {elapsed_time}")
+
+    start = time.perf_counter()
     board = list_to_board(predictions)
     fen = board_to_fen(board)
+    elapsed_time = time.perf_counter() - start
+    total_time += elapsed_time
+    print(f"Elapsed time converting to fen notation: {elapsed_time}")
+
+    print(f"Elapsed total time: {total_time}")
 
     return fen, board_corners
 
