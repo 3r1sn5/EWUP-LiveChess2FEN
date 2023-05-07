@@ -2,10 +2,10 @@ import argparse
 
 import sklearn  # Required in Jetson to avoid cannot allocate memory in # static TLS block error
 
-from keras.applications.imagenet_utils import preprocess_input as \
+from tensorflow.keras.applications.imagenet_utils import preprocess_input as \
     prein_squeezenet
 
-from keras.applications.mobilenet_v2 import preprocess_input as prein_mobilenet
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input as prein_mobilenet
 
 from lc2fen.predict_board import predict_board_keras, predict_board_onnx, \
     predict_board_trt
