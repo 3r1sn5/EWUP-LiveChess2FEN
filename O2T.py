@@ -1,22 +1,34 @@
 import tensorrt as trt
+import os
 
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 trt_runtime = trt.Runtime(TRT_LOGGER)
-def build_engine(onnx_path, shape = [1,224,224,3]):
-   with trt.Builder(TRT_LOGGER) as builder, builder.create_network(1) as network, builder.create_builder_config() as config, trt.OnnxParser(network, TRT_LOGGER) as parser:
-       config.max_workspace_size = (256 << 20)
-       with open(onnx_path, 'rb') as model:
-           parser.parse(model.read())
-       network.get_input(0).shape = shape
-       engine = builder.build_engine(network, config)
-       return engine
 
-def save_engine(engine, file_name):
-   buf = engine.serialize()
-   with open(file_name, 'wb') as f:
-       f.write(buf)
-def load_engine(trt_runtime, plan_path):
-   with open(plan_path, 'rb') as f:
-       engine_data = f.read()
-   engine = trt_runtime.deserialize_cuda_engine(engine_data)
-   return engine
+def build_engine(onnx_path, engine_path, input_shape):
+    """Builds a TensorRT engine from an ONNX file."""
+    with trt.Builder(TRT_LOGGER) as builder, builder.create_network(1) as network, trt.OnnxParser(network, TRT_LOGGER) as parser:
+        builder.max_workspace_size = 1 << 30 # 1GB
+        builder.max_batch_size = 1
+        builder.fp16_mode = True
+
+        with open(onnx_path, 'rb') as model:
+            if not parser.parse(model.read()):
+                for error in range(parser.num_errors):
+                    print(parser.get_error(error))
+                return None
+        
+        network.get_input(0).shape = input_shape
+
+        engine = builder.build_cuda_engine(network)
+        with open(engine_path, "wb") as f:
+            f.write(engine.serialize())
+
+        return engine
+
+# Example usage:
+onnx_path = "/path/to/your/onnx/model.onnx"
+engine_path = "/path/to/save/engine.trt"
+input_shape = (1, 3, 299, 299)
+engine = build_engine(onnx_path, engine_path, input_shape)
+if engine:
+    print("Engine was built successfully and saved to:", engine_path)
