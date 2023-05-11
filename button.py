@@ -1,19 +1,30 @@
-import Jeston.GPIO as GPIO
-
-# Set up the GPIO pin numbering
-GPIO.setmode(GPIO.BCM)
+import RPi.GPIO as GPIO
+import time
 
 # Set up the button pin
-button_pin = 20
-GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+button_pin = 18
 
-# Define a callback function to run when the button is pressed
-def button_callback(channel):
-    print("Number:", channel)
 
-# Detect button presses using interrupts
-GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=button_callback, bouncetime=200)
+def main():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(button_pin, GPIO.IN)
+    prevValue = None
 
-# Keep the script running
-while True:
-    pass
+    print("Starting LC2F, Press CTRL+C to exit")
+    try:
+        while True:
+            value = GPIO.input(button_pin)
+            if value != prevValue:
+                if value == GPIO.LOW:
+                    value_str = "Taking picture..."
+                else:
+                    value_str = "System IDLE..."
+                    print("System Status : ", value_str)
+            prevValue = None
+            time.sleep(1)
+    finally:
+        GPIO.cleanup()
+
+
+if _name_ == '_main_':
+    main()
