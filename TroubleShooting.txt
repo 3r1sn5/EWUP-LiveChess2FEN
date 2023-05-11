@@ -1,0 +1,5 @@
+[ WARN:0] global /home/erlsnup2/workspace/opencv-4.5.0/modules/videoio/src/cap_gstreamer.cpp (1761) handleMessage OpenCV | GStreamer warning: Embedded video playback halted; module v4l2src0 reported: Internal data stream error.
+[ WARN:0] global /home/erlsnup2/workspace/opencv-4.5.0/modules/videoio/src/cap_gstreamer.cpp (888) open OpenCV | GStreamer warning: unable to start pipeline
+[ WARN:0] global /home/erlsnup2/workspace/opencv-4.5.0/modules/videoio/src/cap_gstreamer.cpp (480) isPipelinePlaying OpenCV | GStreamer warning: GStreamer: pipeline have not been created
+/usr/lib/python3/dist-packages/Jetson/GPIO/gpio.py:370: UserWarning: Jetson.GPIO ignores setup()'s pull_up_down parameter
+  warnings.warn("Jetson.GPIO ignores setup()'s pull_up_down parameter")
