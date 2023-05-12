@@ -61,7 +61,10 @@ def predict_board_keras(model_path, img_size, pre_input, path='', a1_pos='',
     :param test: Activates the testing function.
     :return: Predicted FEN string representing the chessboard.
     """
+    start = time.perf_counter()
     model = load_model(model_path)
+    elapsed_time = time.perf_counter() - start
+    print(f"Elapsed time model loading: {elapsed_time}")
 
     def obtain_pieces_probs(pieces):
         predictions = []
@@ -96,7 +99,10 @@ def predict_board_onnx(model_path, img_size, pre_input, path='', a1_pos='',
     :param test: Activates the testing function.
     :return: Predicted FEN string representing the chessboard.
     """
+    start = time.perf_counter()
+    model = load_model(model_path)
     sess = onnxruntime.InferenceSession(model_path)
+    print(f"Elapsed time model loading: {elapsed_time}")
 
     def obtain_pieces_probs(pieces):
         predictions = []

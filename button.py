@@ -19,7 +19,7 @@ def main():
                     value_str = "Taking picture..."
                 else:
                     value_str = "System IDLE..."
-                    print("System Status : ", value_str)
+            print("System Status : ", value_str)
             prevValue = None
             time.sleep(1)
     finally:
