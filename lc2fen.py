@@ -1,6 +1,6 @@
 import argparse
-
 import sklearn  # Required in Jetson to avoid cannot allocate memory in # static TLS block error
+import time
 
 from tensorflow.keras.applications.imagenet_utils import preprocess_input as \
     prein_squeezenet
@@ -71,19 +71,28 @@ def main():
     """Parses the arguments and prints the predicted FEN."""
     path, a1_pos = parse_arguments()
     if ACTIVATE_KERAS:
+        start = time.perf_counter()
         fen, _ = predict_board_keras(MODEL_PATH_KERAS, IMG_SIZE_KERAS,
                                      PRE_INPUT_KERAS, path, a1_pos)
+        elapsed_time = time.perf_counter() - start
+
     elif ACTIVATE_ONNX:
+        start = time.perf_counter()
         fen, _ = predict_board_onnx(MODEL_PATH_ONNX, IMG_SIZE_ONNX,
                                     PRE_INPUT_ONNX, path, a1_pos)
+        elapsed_time = time.perf_counter() - start
+
     elif ACTIVATE_TRT:
+        start = time.perf_counter()
         fen, _ = predict_board_trt(MODEL_PATH_TRT, IMG_SIZE_TRT,
                                    PRE_INPUT_TRT, path, a1_pos)
+        elapsed_time = time.perf_counter() - start
+
     else:
         fen = None
         ValueError("No inference engine selected. This should be unreachable.")
 
-    print(fen)
+    print(fen, "\n", f"Elapsed time whole process: {elapsed_time}")
 
 
 if __name__ == "__main__":
