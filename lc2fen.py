@@ -4,7 +4,8 @@ import time
 
 from tensorflow.keras.applications.imagenet_utils import preprocess_input as \
     prein_squeezenet
-
+from tensorflow.keras.applications.xception import preprocess_input as \
+        prein_xception
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input as prein_mobilenet
 
 from lc2fen.predict_board import predict_board_keras, predict_board_onnx, \
@@ -15,13 +16,13 @@ MODEL_PATH_KERAS = "selected_models/SqueezeNet1p1.h5"
 IMG_SIZE_KERAS = 227
 PRE_INPUT_KERAS = prein_squeezenet
 
-ACTIVATE_ONNX = False
-MODEL_PATH_ONNX = "selected_models/MobileNetV2_0p5_all.onnx"
+ACTIVATE_ONNX = True
+MODEL_PATH_ONNX = "selected_models/MobileNetV2_0p35_all_last.onnx"
 IMG_SIZE_ONNX = 224
 PRE_INPUT_ONNX = prein_mobilenet
 
 ACTIVATE_TRT = False
-MODEL_PATH_TRT = "selected_models/MobileNetV2_0p5_all.trt"
+MODEL_PATH_TRT = "selected_models/MobileNetV2_0p35_all_last.trt"
 IMG_SIZE_TRT = 224
 PRE_INPUT_TRT = prein_mobilenet
 
@@ -69,30 +70,25 @@ def parse_arguments():
 
 def main():
     """Parses the arguments and prints the predicted FEN."""
+    start = time.perf_counter()
     path, a1_pos = parse_arguments()
     if ACTIVATE_KERAS:
-        start = time.perf_counter()
         fen, _ = predict_board_keras(MODEL_PATH_KERAS, IMG_SIZE_KERAS,
                                      PRE_INPUT_KERAS, path, a1_pos)
         elapsed_time = time.perf_counter() - start
-
     elif ACTIVATE_ONNX:
-        start = time.perf_counter()
         fen, _ = predict_board_onnx(MODEL_PATH_ONNX, IMG_SIZE_ONNX,
                                     PRE_INPUT_ONNX, path, a1_pos)
         elapsed_time = time.perf_counter() - start
-
     elif ACTIVATE_TRT:
-        start = time.perf_counter()
         fen, _ = predict_board_trt(MODEL_PATH_TRT, IMG_SIZE_TRT,
                                    PRE_INPUT_TRT, path, a1_pos)
         elapsed_time = time.perf_counter() - start
-
     else:
         fen = None
         ValueError("No inference engine selected. This should be unreachable.")
-
-    print(fen, "\n", f"Elapsed time whole process: {elapsed_time}")
+    print(fen)
+    print(f"Elapsed time whole process: {elapsed_time}")
 
 
 if __name__ == "__main__":

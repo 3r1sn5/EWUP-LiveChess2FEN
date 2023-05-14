@@ -5,10 +5,10 @@ import tensorflow as tf
 import tf2onnx
 
 MODELS_PATH = "../selected_models/"
-KERAS_MODEL_NAME = "MobileNetV2_0p5_all.h5"
+KERAS_MODEL_NAME = "Xception_last.h5"
 ONNX_MODEL_NAME = KERAS_MODEL_NAME[:-2] + "onnx"
 
-image_size = 224
+image_size = 299
 channels = 3
 batch_size = 1
 target_opset = 13
